@@ -42,7 +42,12 @@ async def root():
 
 
 @app.post("/single_inference")
-async def link(request: Request):
+async def single_inference(request: Request):
+    '''Entity Linking for single inference, the function takes in a json object(dictionary) which
+       should include the doc_id (default as 0 if not provided), context_left(context to the left
+       of the mention to be linked), mention(the entity to be linked), and context_right(context 
+       to the left of the mention to be linked)'''
+
     dict_str = await request.json()
     json_dict = dict_str
 
@@ -68,8 +73,13 @@ async def link(request: Request):
     return json_string
 
 
-@app.post("/df_link")
-async def link(request: Request):
+@app.post("/bulk_inference")
+async def bulk_inference(request: Request):
+    '''Entity Linking for bulk inference, the function takes in a list of json object(dictionary)
+       which should include the doc_id (required for bulk), context_left(context to the
+       left of the mention to be linked), mention(the entity to be linked), and context_right
+       (context to the left of the mention to be linked)'''
+
     df_dict_str = await request.json()
     df_json = json.dumps(df_dict_str)
     df = pd.read_json(df_json, orient="records")
@@ -98,6 +108,7 @@ async def link(request: Request):
     # entity_ids = [row['entity_id'] for row in results['entities']]
     # results.loc[results["entity_link"] == "Unknown", "entity_link"] = str(-1)
     # results["entity_link"] = pd.to_numeric(results["entity_link"])
+   
     entity_links = [row['entity_link'] for row in results['entities']]
     entity_links = [entity_link.split("curid=")[-1]
                     for entity_link in entity_links]
@@ -151,7 +162,13 @@ async def link(request: Request):
 
 
 @app.post("/add_entities")
-async def link(request: Request):
+async def add_entities(request: Request):
+    '''The API function for adding new entities into the entities KB on Elasticsearch
+       where the function accepts a list of json objects in the format {"text": " Shearman
+       Chua was born in Singapore, in the year 1996. He is an alumnus of NTU and is currently
+       working at DSTA. ", "idx": "https://en.wikipedia.org/wiki?curid=88767376", "title":
+       "Shearman Chua", "entity": "Shearman Chua"}'''
+          
     df_dict_str = await request.json()
     df_json = json.dumps(df_dict_str)
     df = pd.json_normalize(df_dict_str, max_level=0)
