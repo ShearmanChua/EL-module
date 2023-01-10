@@ -50,3 +50,13 @@ If you are using the EL module as part of a bigger system, add the blink service
 Dockerfile of the EL-module is located in the repository
 
 Once the Docker Compose service is build and started, the EL-module API should be started. To understand and view all the available EL-module API endpoints, refer to the script src/api_service.py
+
+# Enity Linking using modified BLINK model
+
+First,
+
+exact match enity linking is used.For each mention, using BM25, candidates are retrived, if any of the candidates match the mention, and the mention contains more than one word, it is exact match linked.
+
+Second,
+
+for any mentions that could not be exact matched, we perform BLINK entity linking, where candidates are first retrieved using BM25, and then a cross-encoder is used to further rank the candidates, in order to give the top 1 candidate to link the mention to.
