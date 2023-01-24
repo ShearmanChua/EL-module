@@ -120,13 +120,13 @@ async def bulk_inference(request: Request):
     # print("Entity IDs length: ", len(entity_ids))
 
     df_linked = df
-    # df_linked['entity_id'] = entity_ids
     df_linked['entity_link'] = entity_links
     df_linked['entity_names'] = entity_names
-    df_linked['link_type'] = link_type
     df_linked['score'] = score
-    df_linked['embeddings'] = embedding
-    df.drop(columns=['context_left', 'context_right', 'mention_span'])
+    # df_linked['entity_id'] = entity_ids
+    # df_linked['link_type'] = link_type
+    # df_linked['embeddings'] = embedding
+    df_linked.drop(columns=['context_left', 'context_right'])
 
     print(df_linked.head())
     print(df_linked.info())
